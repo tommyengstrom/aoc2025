@@ -1,0 +1,1 @@
+- I'm doing advent of code in order to learn Rust. I have written 0 lines of Rust before starting this project. My goto language is Haskell, sencondary language is Python.
