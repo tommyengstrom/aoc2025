@@ -55,13 +55,13 @@ fn extract_repeating_id(id: u64) -> Option<u64> {
 
 
 #[cfg(test)]
-mod tests {
+mod test02 {
     use super::*;
 
     #[test]
     fn test_extract_repeating_id() {
         assert_eq!(extract_repeating_id(1234), None);
-        assert_eq!(extract_repeating_id(1212), Some(12));
+        assert_eq!(extract_repeating_id(1212), Some(1212));
         assert_eq!(extract_repeating_id(12512), None);
         assert_eq!(extract_repeating_id(0101), None);
     }

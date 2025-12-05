@@ -59,7 +59,7 @@ fn rotate(pos: u64, rotation: &Rotation) -> u64 {
 }
 
 #[cfg(test)]
-mod tests {
+mod test01 {
     use super::*;
 
     #[test]
