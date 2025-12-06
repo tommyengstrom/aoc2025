@@ -1,4 +1,4 @@
-use std::{cmp::max, fs};
+use std::fs;
 
 fn parse_input(s: &str) -> Vec<Option<Bank>> {
     s.trim().lines().map(parse_bank).collect()
@@ -35,26 +35,24 @@ fn main() {
     println!("Total jolts 12: {total12}");
 }
 
-
 fn max_jolts(size: usize, bank: &Bank) -> u64 {
-
-    let mut result: Vec<u64> = Vec::new(); 
-
-    for &d in bank.batteries.iter() {
-        result.push(d);
-        if result.len() > size {
-            for i in 0..result.len() -1 {
-                if result[i] < result[i+1] {
-                    result.remove(i);
-                    break;
+    bank.batteries
+        .iter()
+        .fold(Vec::with_capacity(size+1), |mut result, &d| {
+            result.push(d);
+            if result.len() > size {
+                match result.windows(2).position(|w| w[0] < w[1]) {
+                    Some(i) => {
+                        result.remove(i);
+                    }
+                    None => {
+                        result.pop();
+                    }
                 }
             }
-            if result.len() > size {
-                result.pop();
-            }
-        }
-    };
-    result.iter().fold(0, |acc, d| 10 * acc + d)
+            result
+    })
+    .iter().fold(0, |acc, d| 10 * acc + d)
 }
 
 #[cfg(test)]
