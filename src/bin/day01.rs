@@ -5,28 +5,44 @@ fn main() {
 
     let zeros = count_zeros(&rotations);
     println!("Numer of zeros: {zeros}");
+
+    let zero_passes = count_zero_passes(&parse_rotations2("data/day01.txt"));
+    println!("Numer of zero passes: {zero_passes}");
 }
 // Plan of attack
 // 1. Create data type `Rotation` for representing rotations
 // 2. Implement rotation logic
 // 3. Parse file as array of `Rotation`
 // 4. Calculate the number of times the dial points to 0
-
-
 fn parse_rotations(filename: &str) -> Vec<Rotation> {
-   fs::read_to_string(filename)
+    fs::read_to_string(filename)
         .expect("Failed to read file {filename}")
         .lines()
         .map(|line| {
-            let (direction,steps) = line.split_at(1);
+            let (direction, steps) = line.split_at(1);
             let n: u64 = steps.parse().expect("Invalid number");
             match direction {
                 "L" => Rotation::Left(n),
                 "R" => Rotation::Right(n),
                 _ => panic!("Invalid rotation: {direction}"),
             }
-        }
-        )
+        })
+        .collect()
+}
+
+fn parse_rotations2(filename: &str) -> Vec<i64> {
+    fs::read_to_string(filename)
+        .expect("Failed to read file {filename}")
+        .lines()
+        .map(|line| {
+            let (direction, steps) = line.split_at(1);
+            let n: u64 = steps.parse().expect("Invalid number");
+            match direction {
+                "L" => -(n as i64),
+                "R" => n as i64,
+                _ => panic!("Invalid rotation: {direction}"),
+            }
+        })
         .collect()
 }
 
@@ -58,6 +74,23 @@ fn rotate(pos: u64, rotation: &Rotation) -> u64 {
     r % 100
 }
 
+fn count_zero_passes(rs: &Vec<i64>) -> u64 {
+    println!("-----------------------");
+    rs.iter()
+        .fold((50, 0), |(pos, passes), r| {
+            println!("{passes}: {pos} + {r}");
+            let updated_pos = pos + r;
+            let new_pos = updated_pos.rem_euclid(100);
+            let new_passes = if *r >= 0 {
+                updated_pos.div_euclid(100)
+            } else {
+                (pos - 1).div_euclid(100) - (updated_pos - 1).div_euclid(100)
+            };
+            (new_pos, passes + new_passes)
+        })
+        .1 as u64
+}
+
 #[cfg(test)]
 mod test01 {
     use super::*;
@@ -84,5 +117,18 @@ mod test01 {
             count_zeros(&[Rotation::Left(50), Rotation::Left(75), Rotation::Right(75)].to_vec()),
             2
         );
+    }
+
+    #[test]
+    fn test_count_zero_passes() {
+        assert_eq!(count_zero_passes(&[1].to_vec()), 0);
+        assert_eq!(count_zero_passes(&[50].to_vec()), 1);
+        assert_eq!(count_zero_passes(&[-50].to_vec()), 1);
+        assert_eq!(count_zero_passes(&[60].to_vec()), 1);
+        assert_eq!(count_zero_passes(&[60, -11].to_vec()), 2);
+
+        let rotations: Vec<i64> = vec![-68, -30, 48, -5, 60, -55, -1, -99, 14, -82];
+
+        assert_eq!(count_zero_passes(&rotations), 6);
     }
 }
