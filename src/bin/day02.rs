@@ -74,10 +74,10 @@ mod test02 {
     }
     #[test]
     fn test_is_invalid_id() {
-        assert_eq!(is_repeating_id(1234), false);
-        assert_eq!(is_repeating_id(1212), true);
-        assert_eq!(is_repeating_id(12512), false);
-        assert_eq!(is_repeating_id(101), false);
+        assert!(!is_repeating_id(1234));
+        assert!(is_repeating_id(1212));
+        assert!(!is_repeating_id(12512));
+        assert!(!is_repeating_id(101));
     }
 
     fn range(a: u64, b: u64) -> Vec<u64> {

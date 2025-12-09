@@ -75,10 +75,8 @@ fn rotate(pos: u64, rotation: &Rotation) -> u64 {
 }
 
 fn count_zero_passes(rs: &Vec<i64>) -> u64 {
-    println!("-----------------------");
     rs.iter()
         .fold((50, 0), |(pos, passes), r| {
-            println!("{passes}: {pos} + {r}");
             let updated_pos = pos + r;
             let new_pos = updated_pos.rem_euclid(100);
             let new_passes = if *r >= 0 {
